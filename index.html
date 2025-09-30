@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Docentes FCA–UNA · Maestros que inspiran</title>
+  <meta name="description" content="Proyecto de extensión: sitio vivo y dinámico para reconocer la labor docente de la FCA-UNA." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E🎓%3C/text%3E%3C/svg%3E">
+  <style>
+    /* =====================
+       PALETA INSTITUCIONAL
+       ===================== */
+    :root{
+      --verde: #09874b;    /* principal */
+      --naranja: #fe6341;  /* acento */
+      --blanco: #ffffff;
+      --negro:  #010101;
+      --verde-claro: #a1d1bb;
+      --naranja-claro: #f8b3a4;
+      --gris: #4b5563;
+      --radius: 16px;
+      --shadow: 0 12px 30px rgba(0,0,0,.10);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Arial;background:var(--blanco);color:var(--negro)}
+    a{color:inherit;text-decoration:none}
+
+    /* ===== CABECERA ===== */
+    header{position:sticky;top:0;z-index:50;background:var(--verde);color:var(--blanco);box-shadow:var(--shadow)}
+    .bar{max-width:1200px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:18px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.3px}
+    .brand .logo{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--blanco);color:var(--verde)}
+    nav{margin-left:auto}
+    nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}
+    nav a{color:var(--blanco);opacity:.95;font-weight:700}
+    nav a:hover{opacity:1}
+    .subbar{height:4px;background:linear-gradient(90deg,var(--naranja),var(--naranja-claro))}
+
+    /* ===== HERO DINÁMICO ===== */
+    .hero{position:relative;overflow:hidden}
+    .hero-inner{max-width:1200px;margin:0 auto;padding:64px 20px;display:grid;gap:24px;align-items:center}
+    @media (min-width:960px){.hero-inner{grid-template-columns:1.3fr 1fr}}
+    .title{font-size:clamp(28px,6vw,54px);line-height:1.05;margin:0}
+    .lead{color:var(--gris);font-size:18px;margin:10px 0 0}
+    .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+    .btn{border:0;border-radius:999px;padding:12px 18px;font-weight:800;box-shadow:var(--shadow);cursor:pointer}
+    .btn.primary{background:var(--naranja);color:var(--blanco)}
+    .btn.secondary{background:var(--verde);color:var(--blanco)}
+
+    /* Burbujas animadas de fondo */
+    .bubbles{position:absolute;inset:-20% -10% auto -10%;height:140%;pointer-events:none;filter:blur(30px);opacity:.35}
+    .bubble{position:absolute;border-radius:50%;background:var(--verde-claro);animation:float 16s infinite linear}
+    .bubble.b2{background:var(--naranja-claro);animation-duration:22s;left:60%;top:10%;width:420px;height:420px}
+    .bubble.b1{left:10%;top:30%;width:520px;height:520px}
+    @keyframes float{from{transform:translateY(20px)}50%{transform:translateY(-20px)}to{transform:translateY(20px)}}
+
+    /* ===== SECCIONES CON FLUJO ===== */
+    section{padding:60px 20px}
+    .wrap{max-width:1200px;margin:0 auto}
+    .section-head{display:flex;align-items:center;gap:12px;margin:0 0 18px}
+    .chip{background:var(--verde);color:var(--blanco);padding:8px 14px;border-radius:999px;font-weight:800}
+
+    /* ===== DOCENTES: CARRUSEL HORIZONTAL ===== */
+    .searchbar{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 16px}
+    .input{flex:1;min-width:220px;padding:12px 14px;border:2px solid var(--verde);border-radius:12px;background:#fff;color:#111}
+    .filter{display:flex;gap:8px;flex-wrap:wrap}
+    .pill{border:1.5px solid var(--naranja);color:var(--naranja);padding:6px 10px;border-radius:999px;font-size:13px;cursor:pointer;user-select:none}
+    .pill.active{background:var(--naranja);color:#fff}
+
+    .rail{display:grid;grid-auto-flow:column;grid-auto-columns:calc(100% - 40px);gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px}
+    @media (min-width:680px){.rail{grid-auto-columns:48%}}
+    @media (min-width:1024px){.rail{grid-auto-columns:32%}}
+    .card{scroll-snap-align:start;background:#fff;border:1px solid #e5e7eb;border-radius:16px;box-shadow:var(--shadow);overflow:hidden;opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+    .card.show{opacity:1;transform:none}
+    .prof{display:grid;grid-template-columns:84px 1fr;gap:14px;padding:16px}
+    .avatar{width:84px;height:84px;border-radius:14px;background:#eaf6ef;color:var(--verde);display:grid;place-items:center;font-weight:900;font-size:22px;overflow:hidden;border:1px solid #e5e7eb}
+    .avatar img{width:100%;height:100%;object-fit:cover;display:block}
+    .muted{color:var(--gris)}
+    .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .tag{border:1px solid var(--naranja);color:var(--naranja);padding:4px 8px;border-radius:999px;font-size:12px}
+
+    /* ===== HISTORIAS: TIMELINE ANIMADA ===== */
+    .timeline{position:relative;margin:20px 0}
+    .timeline:before{content:"";position:absolute;left:18px;top:0;bottom:0;width:4px;background:linear-gradient(var(--verde),var(--naranja))}
+    .story{position:relative;margin-left:60px;background:#fff;border:1px solid #e5e7eb;border-radius:16px;box-shadow:var(--shadow);padding:16px;margin-bottom:16px;opacity:0;transform:translateX(-14px);transition:opacity .6s ease,transform .6s ease}
+    .story:before{content:"";position:absolute;left:-46px;top:18px;width:14px;height:14px;border-radius:50%;background:var(--naranja);box-shadow:0 0 0 6px #fff}
+    .story.show{opacity:1;transform:none}
+
+    /* ===== RECURSOS: TARJETAS INTERACTIVAS ===== */
+    .grid{display:grid;gap:16px}
+    @media (min-width:800px){.grid.cols-3{grid-template-columns:repeat(3,1fr)}}
+    .resource{background:#fff;border:1px solid #e5e7eb;border-radius:16px;box-shadow:var(--shadow);padding:18px;transition:transform .25s ease, box-shadow .25s ease}
+    .resource:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(0,0,0,.12)}
+
+    /* ===== FOOTER ===== */
+    footer{background:var(--verde);color:#fff;padding:30px 20px;margin-top:20px}
+    .footer-inner{max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between}
+
+    /* Accesibilidad: reducir movimiento si el usuario lo pide */
+    @media (prefers-reduced-motion: reduce){
+      .bubble,.card,.story{animation:none;transition:none}
+      html{scroll-behavior:auto}
+    }
+  </style>
+</head>
+<body>
+  <!-- CABECERA -->
+  <header>
+    <div class="bar">
+      <div class="brand"><span class="logo">🎓</span><span>Docentes FCA–UNA</span></div>
+      <nav aria-label="Principal">
+        <ul>
+          <li><a href="#inicio">Inicio</a></li>
+          <li><a href="#docentes">Docentes</a></li>
+          <li><a href="#historias">Historias</a></li>
+          <li><a href="#recursos">Recursos</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="subbar"></div>
+  </header>
+
+  <!-- HERO con movimiento sutil -->
+  <section id="inicio" class="hero" aria-labelledby="h-hero">
+    <div class="bubbles">
+      <div class="bubble b1"></div>
+      <div class="bubble b2"></div>
+    </div>
+    <div class="hero-inner">
+      <div>
+        <h1 id="h-hero" class="title">Reconocemos a quienes forman el futuro</h1>
+        <p class="lead">Proyecto de extensión dedicado a visibilizar la vocación, trayectoria y aportes de docentes de la FCA-UNA.</p>
+        <div class="cta">
+          <a class="btn primary" href="#docentes">Ver docentes</a>
+          <a class="btn secondary" href="#sumate" id="sumateBtn">Súmate al proyecto</a>
+        </div>
+      </div>
+      <div class="card show" style="align-self:stretch">
+        <div class="prof">
+          <div class="avatar">FCA</div>
+          <div>
+            <strong>Maestros que inspiran</strong>
+            <p class="muted">Un sitio vivo y dinámico con perfiles, historias y recursos educativos.</p>
+            <div class="tags"><span class="tag">Biodiversidad</span><span class="tag">Educación</span><span class="tag">Valores</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOCENTES con carrusel horizontal -->
+  <section id="docentes" aria-labelledby="h-doc">
+    <div class="wrap">
+      <div class="section-head"><span class="chip">Docentes</span><h2 id="h-doc">Perfiles destacados</h2></div>
+      <div class="searchbar">
+        <input id="q" class="input" type="search" placeholder="Buscar docentes por nombre, área o institución…" aria-label="Buscar docentes" />
+        <div class="filter" aria-label="Filtros rápidos">
+          <span class="pill" data-area="">Todos</span>
+          <span class="pill" data-area="Ingeniería Ambiental">Ing. Ambiental</span>
+          <span class="pill" data-area="Lengua">Lengua</span>
+          <span class="pill" data-area="Historia">Historia</span>
+        </div>
+      </div>
+      <div id="rail" class="rail" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- HISTORIAS con timeline -->
+  <section id="historias" aria-labelledby="h-his" style="background:linear-gradient(180deg,#fff, #fff 60%, #f7faf9 100%)">
+    <div class="wrap">
+      <div class="section-head"><span class="chip" style="background:var(--naranja)">Historias</span><h2 id="h-his">Testimonios que inspiran</h2></div>
+      <div id="timeline" class="timeline"></div>
+    </div>
+  </section>
+
+  <!-- RECURSOS interactivos -->
+  <section id="recursos" aria-labelledby="h-rec">
+    <div class="wrap">
+      <div class="section-head"><span class="chip">Recursos</span><h2 id="h-rec">Guías y plantillas</h2></div>
+      <div class="grid cols-3">
+        <article class="resource">
+          <h3>Guía de entrevistas</h3>
+          <p class="muted">Preguntas breves para conocer vocación, método y consejos.</p>
+          <ol>
+            <li>¿Qué la/lo motivó a enseñar?</li>
+            <li>¿Cuál es su enfoque de clase?</li>
+            <li>Un logro que le enorgullezca.</li>
+            <li>Un consejo para estudiantes.</li>
+          </ol>
+        </article>
+        <article class="resource">
+          <h3>Política editorial</h3>
+          <p class="muted">Respeto, precisión y autorización antes de publicar fotos y textos.</p>
+          <ul>
+            <li>Verificar datos básicos</li>
+            <li>Uso de lenguaje claro</li>
+            <li>Consentimiento informado</li>
+          </ul>
+        </article>
+        <article class="resource">
+          <h3>Plantillas</h3>
+          <p class="muted">Formatos para reseñas, perfiles e historias.</p>
+          <a class="btn primary" href="#" id="dlPlantilla">Descargar .docx</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUMATE: formulario simple -->
+  <section id="sumate" aria-labelledby="h-sum">
+    <div class="wrap">
+      <div class="section-head"><span class="chip" style="background:var(--naranja)">Participá</span><h2 id="h-sum">Súmate al proyecto</h2></div>
+      <div class="card">
+        <form id="form" onsubmit="enviar(event)">
+          <div style="display:grid;gap:12px;grid-template-columns:1fr 1fr">
+            <label>Tu nombre<br><input class="input" name="nombre" required></label>
+            <label>Correo<br><input class="input" name="correo" type="email" required></label>
+          </div>
+          <label style="display:block;margin-top:10px">Docente propuesto<br><input class="input" name="docente" required></label>
+          <label style="display:block;margin-top:10px">Motivo de la nominación<br><textarea class="input" name="motivo" rows="4" required></textarea></label>
+          <div class="cta"><button class="btn primary" type="submit">Enviar propuesta</button><a class="btn secondary" href="mailto:saritaseux@gmail.com?subject=Sumarme%20al%20proyecto">Escribir por correo</a></div>
+          <p id="ok" class="muted" style="display:none;margin-top:8px">¡Gracias! Tu propuesta fue registrada (modo demo).</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section id="contacto" aria-labelledby="h-ct">
+    <div class="wrap">
+      <div class="section-head"><span class="chip">Contacto</span><h2 id="h-ct">Hablemos</h2></div>
+      <div class="card"><p>Correo: <a href="mailto:saritaseux@gmail.com">saritaseux@gmail.com</a></p></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">© <span id="year"></span> FCA–UNA · Maestros que inspiran <span class="muted">· Sitio de extensión</span></div>
+  </footer>
+
+  <script>
+    // ===== Datos de ejemplo (editables) =====
+    const DOCENTES = [
+      { nombre: "Marta Benítez", area: "Lengua", institucion: "FCA-UNA", iniciales: "MB", resumen: "Enfoque en lectura comprensiva y expresión escrita.", tags:["Lengua","Comunicación"], foto: "" },
+      { nombre: "Carlos Ocampos", area: "Ingeniería Ambiental", institucion: "FCA-UNA", iniciales: "CO", resumen: "Aprendizaje basado en proyectos y salidas de campo.", tags:["Campo","Proyectos"], foto: "" },
+      { nombre: "Ana Villalba", area: "Historia", institucion: "FCA-UNA", iniciales: "AV", resumen: "Metodología participativa y uso de fuentes primarias.", tags:["Historia","Participación"], foto: "" },
+      { nombre: "Diego Duarte", area: "Ciencias", institucion: "FCA-UNA", iniciales: "DD", resumen: "Laboratorios didácticos y enfoque experimental.", tags:["Ciencias","Laboratorio"], foto: "" }
+    ];
+
+    const HISTORIAS = [
+      { titulo: "La paciencia también enseña", autor: "Prof. Marta Benítez", texto: "Cada clase es una oportunidad para formar criterio y carácter.", fecha: "2025-08-01" },
+      { titulo: "Aprender haciendo", autor: "Ing. Carlos Ocampos", texto: "Las prácticas en campo conectan teoría y realidad.", fecha: "2025-08-15" },
+      { titulo: "El valor de escuchar", autor: "Prof. Ana Villalba", texto: "La participación ordena y fortalece el aprendizaje.", fecha: "2025-09-05" }
+    ];
+
+    // ===== Utilidades =====
+    const $ = sel => document.querySelector(sel);
+    const rail = $('#rail');
+    const q = $('#q');
+
+    // Render docentes en carrusel
+    function docenteCard(p){
+      const ini = p.iniciales || p.nombre.split(' ').map(s=>s[0]).slice(0,2).join('');
+      return `
+        <article class="card reveal">
+          <div class="prof">
+            <div class="avatar">${p.foto?`<img src='${p.foto}' alt='${p.nombre}'>`:ini}</div>
+            <div>
+              <strong style="font-size:18px">${p.nombre}</strong>
+              <div class="muted">${p.area} · ${p.institucion}</div>
+              <p style="margin:8px 0 0">${p.resumen}</p>
+              <div class="tags">${(p.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+            </div>
+          </div>
+        </article>`;
+    }
+
+    function renderDocentes(lista){ rail.innerHTML = lista.map(docenteCard).join(''); observeReveals(); }
+
+    // Búsqueda / filtros
+    function filtrar(){
+      const term = (q.value||'').toLowerCase();
+      const active = document.querySelector('.pill.active');
+      const area = active ? (active.getAttribute('data-area')||'') : '';
+      const res = DOCENTES.filter(p => {
+        const txt = [p.nombre,p.area,p.institucion,(p.tags||[]).join(' ')].join(' ').toLowerCase();
+        const matchTxt = !term || txt.includes(term);
+        const matchArea = !area || (p.area||'') === area;
+        return matchTxt && matchArea;
+      });
+      renderDocentes(res);
+    }
+
+    q.addEventListener('input', filtrar);
+    document.querySelectorAll('.pill').forEach(el=>{
+      el.addEventListener('click',()=>{ document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active')); el.classList.add('active'); filtrar(); })
+    });
+
+    // Reveal on scroll (IntersectionObserver)
+    function observeReveals(){
+      const obs = new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('show') })
+      }, {threshold:.12});
+      document.querySelectorAll('.card:not(.show), .story:not(.show)').forEach(el=>obs.observe(el));
+    }
+
+    // Render historias (timeline)
+    function storyItem(s){
+      return `<article class="story"> <h3>${s.titulo} — <span class="muted">${s.autor}</span></h3><p>${s.texto}</p></article>`
+    }
+    function renderHistorias(){ $('#timeline').innerHTML = HISTORIAS.map(storyItem).join(''); observeReveals(); }
+
+    // Descargar plantilla simple (.docx generado al vuelo)
+    const dlBtn = document.getElementById('dlPlantilla');
+    if(dlBtn){ dlBtn.addEventListener('click', (e)=>{ e.preventDefault(); const contenido = `Plantilla de perfil docente\n\nNombre:\nÁrea:\nInstitución:\nTrayectoria (5-7 líneas):\nLogros destacados (3 puntos):\nConsejo para estudiantes (1-2 líneas):`; const blob=new Blob([contenido],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='Plantilla_perfil_docente.docx'; a.click(); URL.revokeObjectURL(url); }); }
+
+    // Form demo
+    function enviar(e){ e.preventDefault(); document.getElementById('ok').style.display='block'; e.target.reset(); }
+
+    // Año
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Inicializar
+    renderDocentes(DOCENTES);
+    renderHistorias();
+
+    // CTA sumate: scroll suave
+    document.getElementById('sumateBtn').addEventListener('click', (e)=>{ /* anchor already scrolls; kept for clarity */ });
+  </script>
+</body>
+</html>
